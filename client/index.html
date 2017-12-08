@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>Control System</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/navbar-fixed-top.css" media="screen" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+</head>
+
+<body>
+    <!-- Static navbar -->
+    <nav class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><i class="fa fa-leaf fa-fw"></i>Control System</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href="#">Temperature &amp; Heater</a></li>
+            <li><a href="#about">pH Reading</a></li>
+            <li><a href="#contact">Motor</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+	<form role="form">
+	  <div class="form-group">
+		<div class="form-inline row">
+		  <div class="form-group col-md-6">
+			<input type="text" pattern="^[0-9]+([.]\d{1,2})?$" class="form-control" id="inputTemperature" placeholder="temperature with 2 decimal points" required autofocus>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		  </div>
+		</div>
+	  </div>
+	</form>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <canvas id="canvas1"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <canvas id="canvas2"></canvas>
+        </div>
+      </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+  <script>
+      var lineChartData = {
+        labels: ["Data 1", "Data 2", "Data 3", "Data 4", "Data 5", "Data 6", "Data 7"],
+        datasets: [{
+            fillColor: "rgba(151,187,205,0)",
+            strokeColor: "rgba(12, 121, 175,1)",
+            pointColor: "rgba(151,187,205,1)",
+            data: [0]
+        }]
+
+      }
+
+      Chart.defaults.global.animationSteps = 30;
+      Chart.defaults.global.tooltipYPadding = 16;
+      Chart.defaults.global.tooltipCornerRadius = 0;
+      Chart.defaults.global.tooltipTitleFontStyle = "normal";
+      Chart.defaults.global.tooltipFillColor = "rgba(4, 93, 137,1)";
+      Chart.defaults.global.animationEasing = "easeOutQuad";
+      Chart.defaults.global.responsive = true;
+      Chart.defaults.global.scaleLineColor = "rgba(132, 132, 132,1)";
+      Chart.defaults.global.scaleFontSize = 16;
+
+      var ctx1 = document.getElementById("canvas1").getContext("2d");
+      var LineChartDemo = new Chart(ctx1).Line(lineChartData, {
+        pointDotRadius: 4,
+        bezierCurve: false,
+        scaleShowVerticalLines: false,
+        scaleGridLineColor: "rgba(132, 132, 132,1)"
+      });
+      var ctx2 = document.getElementById("canvas2").getContext("2d");
+  </script>
+</body>
+
+</html>

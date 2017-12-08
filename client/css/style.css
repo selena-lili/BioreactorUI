@@ -1,0 +1,43 @@
+body {
+  background-color: #000;
+  text-align: center;
+  margin: 0;
+  overflow: hidden;
+}
+
+#canvas1 {
+  width: 100%;
+}
+
+label{
+	color:aliceblue;
+}
+h1{
+	color: aliceblue;
+}
+.text{
+	margin-top: 3rem;
+	padding: 5px 0px 5px 0px;
+	color:aliceblue;
+	font-size: 20px;
+}
+form{
+	margin:1em;
+}
+#inputs{
+	margin-top: 5em;
+}
+#intro{
+	border-right-style: solid;
+	border-right-color: aliceblue;
+}
+.warning{
+	color:firebrick;
+	display: none;
+}
+.hide{
+	display: none;
+}
+.show{
+	display: block;
+}

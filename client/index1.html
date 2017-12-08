@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Bioreactor Monitor</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  	<link rel="stylesheet" href="css/navbar-fixed-top.css" media="screen" type="text/css" />
+  	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  	<link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+  </head>
+  <body>
+   <nav class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><i class="fa fa-leaf fa-fw"></i>Control System</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+           	<li class="active"><a href="#">Adjustment</a></li>
+            <li><a href="#">Temperature &amp; Heater</a></li>
+            <li><a href="#">pH Reading</a></li>
+            <li><a href="#">Motor</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <div id="content">
+    <div id="main">
+		<div id="intro" class="col-md-6">
+			<h1><i class="fa fa-leaf fa-fw"></i>Control System</h1>
+			<hr>
+			<div class="text">
+				<p class="text-left">This is a bioreactor monitor. We can adjust the temperture and stirring speed of the system by clicking the "connect" button and filling the form.</p>
+				<form action="#" id="connectPort">
+				  <input class="btn btn-primary" type="submit" value="connect">
+				</form>
+				<p class="text-left">To view the graph of the current temperture, please click on "Temperture &amp; Heater" Section.</p>
+				<p class="text-left">To view the reading of the current pH, please click on "pH Reading" Section.</p>
+				<p class="text-left">To view the reading of the current pH, please click on "pH Reading" Section.</p>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<form action="#" id="inputs" role="form" class="form-horizontal">
+				<div class="form-group">		
+				  <label for="temp" class="col-sm-2 control-label">Temperture:</label>
+				  <div class="col-sm-10">
+					<input type="text" class="settings form-control" name="temp" id="temp" placeholder="Give a temperature in one decimal place." onfocusout="insertTemp()" value="" autofocus>
+				  </div>
+				  <p class="warning text-left col-sm-offset-2">Please provide a temperture with one decimal place</p>
+				</div>
+				<div class="form-group">
+				  <label for="ss" class="col-sm-2 control-label">Stirring speed:</label>
+				  <div class="col-sm-10">
+					  <input type="text" class="settings form-control" name="Stirring speed" id="ss" placeholder="Please give a valid stirring speed!" onfocusout="insertSs()" value="">
+				  </div>
+				</div>
+				<div class="form-group">
+					<input class="btn btn-primary" type="submit" value="submit">
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="temperature" class="hide">
+		<canvas id="canvas1"></canvas>
+	</div>	
+	<div id="ph" class="hide">
+		<canvas id="canvas2"></canvas>
+	</div>	
+	<div id="motor" class="hide">
+		<canvas id="canvas3"></canvas>
+	</div>
+	</div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+	<script>
+		$(document.body).css({
+			"overflow-x":"hidden",
+			"overflow-y":"hidden"
+		});
+	</script>
+	<script>
+		window.onload = function(){
+			var myNav = document.getElementById("navbar");
+			var myUl = myNav.getElementsByTagName("ul")[0];
+			var myLi = myUl.getElementsByTagName("li");
+			var content = document.getElementById("content").children;
+			/*var tem = document.getElementById("temperature");
+			var ph = document.getElementById("ph");
+			var motor = document.getElementById("motor");*/
+			for (var i=0;i<myLi.length;i++){
+				myLi[i].index = i;
+				myLi[i].onclick = function(){
+					for(var j=0;j < myLi.length; j++){
+						myLi[j].className = "";
+						content[j].className = "hide";
+					}
+					this.className = "active";
+					content[this.index].className = "show";
+				}
+			}
+		}
+	</script>
+  </body>
+  <script>
+	  
+	 var lineChartData1 = {
+		type:'line',
+		data:{
+			labels: ["Data 1", "Data 2", "Data 3", "Data 4", "Data 5", "Data 6", "Data 7"],
+			datasets: [{
+				label:"Temperature",
+				borderColor:"rgba(12, 121, 175,1)",
+				backgroundColor:"rgba(151,187,205,1)",
+				data: [0],
+				fill: false
+			}],
+		},
+		options:{
+			responsive:true,
+			hover: {
+				mode: 'nearest',
+				intersect: true
+			},
+			tooltips: {
+				mode: 'index',
+				intersect: false,
+			},
+			scales: {
+				xAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+						labelString: 'Time',
+						fontColor:"white",
+						fontSize:16
+					},
+					ticks:{
+						fontColor:"rgba(255,255,255,0.8)"
+					},
+					time:{
+						unit:'minute'
+					}
+				}],
+				yAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+						labelString: 'Temperature in degree',
+						fontColor:"white",
+						fontSize:16
+					},
+					gridLines:{
+						color:"rgba(132, 132, 132,1)",
+						zeroLineColor:"rgba(132, 132, 132,1)"
+					},
+					ticks:{
+						fontColor:"rgba(255,255,255,0.8)",
+						beginAtZero: true
+					}
+				}]
+			},
+			legend:{
+				labels:{
+					fontColor:"white",
+					fontSize: 18
+				}
+			}
+		}
+      };
+	  
+	 var lineChartData2 = {
+		type:'line',
+		data:{
+			labels: ["Data 1", "Data 2", "Data 3", "Data 4", "Data 5", "Data 6", "Data 7"],
+			datasets: [{
+				label:"ph Value",
+				borderColor:"rgba(12, 121, 175,1)",
+				backgroundColor:"rgba(151,187,205,1)",
+				data: [5,5,5,5,5],
+				fill: false
+			}],
+		},
+		options:{
+			responsive:true,
+			hover: {
+				mode: 'nearest',
+				intersect: true
+			},
+			tooltips: {
+				mode: 'index',
+				intersect: false,
+			},
+			scales: {
+				xAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+						labelString: 'Time',
+						fontColor:"white",
+						fontSize:16
+					},
+					ticks:{
+						fontColor:"rgba(255,255,255,0.8)",
+						beginAtZero:true
+					}
+				}],
+				yAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+						labelString: 'ph Value',
+						fontColor:"white",
+						fontSize:16
+					},
+					gridLines:{
+						color:"rgba(132, 132, 132,1)",
+						zeroLineColor:"rgba(132, 132, 132,1)"
+					},
+					ticks:{
+						fontColor:"rgba(255,255,255,0.8)"
+					}
+				}]
+			},
+			legend:{
+				labels:{
+					fontColor:"white",
+					fontSize: 18
+				}
+			}
+		}
+      };
+	  
+	  var lineChartData3 = {
+		type:'line',
+		data:{
+			labels: ["Data 1", "Data 2", "Data 3", "Data 4", "Data 5", "Data 6", "Data 7"],
+			datasets: [{
+				label:"Motor",
+				borderColor:"rgba(12, 121, 175,1)",
+				backgroundColor:"rgba(151,187,205,1)",
+				data: [1200,1300,1400,1300],
+				fill: false
+			}],
+		},
+		options:{
+			responsive:true,
+			hover: {
+				mode: 'nearest',
+				intersect: true
+			},
+			tooltips: {
+				mode: 'index',
+				intersect: false,
+			},
+			scales: {
+				xAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+						labelString: 'Time',
+						fontColor:"white",
+						fontSize:16
+					},
+					ticks:{
+						fontColor:"rgba(255,255,255,0.8)"
+					}
+				}],
+				yAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+						labelString: 'Stirring Speed in RPM',
+						fontColor:"white",
+						fontSize:16
+					},
+					gridLines:{
+						color:"rgba(132, 132, 132,1)",
+						zeroLineColor:"rgba(132, 132, 132,1)"
+					},
+					ticks:{
+						fontColor:"rgba(255,255,255,0.8)"
+					}
+				}]
+			},
+			legend:{
+				labels:{
+					fontColor:"white",
+					fontSize: 18
+				}
+			}
+		}
+      };
+      /*Chart.defaults.global.animationSteps = 30;
+      Chart.defaults.global.tooltipYPadding = 16;
+      Chart.defaults.global.tooltipCornerRadius = 0;
+      Chart.defaults.global.tooltipTitleFontStyle = "normal";
+      Chart.defaults.global.tooltipFillColor = "rgba(4, 93, 137,1)";
+      Chart.defaults.global.animationEasing = "easeOutQuad";
+      Chart.defaults.global.responsive = true;
+      Chart.defaults.global.scaleLineColor = "rgba(132, 132, 132,1)";
+      Chart.defaults.global.scaleFontSize = 16;*/
+	  
+      var ctx1 = document.getElementById("canvas1").getContext("2d");
+      window.myLineChart1 = new Chart(ctx1, lineChartData1);
+	  
+      /*var LineChartDemo = new Chart(ctx1).Line(lineChartData, {
+        pointDotRadius: 4,
+        bezierCurve: false,
+        scaleShowVerticalLines: false,
+        scaleGridLineColor: "rgba(132, 132, 132,1)",
+		responsive:true
+      });*/
+	  
+      var ctx2 = document.getElementById("canvas2").getContext("2d");
+	  window.myLineChart2 = new Chart(ctx2, lineChartData2); 
+	  
+	  var ctx3 = document.getElementById("canvas3").getContext("2d");
+	  window.myLineChart3 = new Chart(ctx3, lineChartData3);
+    //ipc conmunication
+    /*const {ipcRenderer} = require('electron');
+    ipcRenderer.on('ready', (event, message) => {
+      console.log(message)  // Prints 'whoooooooh!'
+    });
+
+    ipcRenderer.send('user-inputs', {temp: 30.0, pH: 7.5})
+    ipcRenderer.on('inputs-reply', (event, reply) => {
+      console.log(reply)
+    });
+
+    ipcRenderer.on('mc-dataset', (event, dataset) => {
+      console.log("The temp is: ", dataset.temp, " The pH is: ", dataset.pH, " The stiring speed is: ", dataset.ss)
+    });*/
+
+    //Open port and check if it can be opened ( when the user click start?)
+
+    let SerialPort = require('serialport')
+    let port
+    const portConnection = document.querySelector("#connectPort");
+    portConnection.addEventListener("submit", function(event){ // when the user click on connect
+      event.preventDefault();
+      //console.log("clicked on connect!")
+      if (port != undefined){
+        alert("Port connection with microcontroller is already established!")
+      }else{
+        SerialPort.list(function (err, ports) {
+          if (err){
+            return alert("There are no available ports!")
+          }else{
+            var portName;
+            ports.forEach(function(eachPort) {
+              portName = eachPort.comName;
+              console.log(portName," is the port being used for connection!");
+            });
+            console.log(portName)
+            if (portName != undefined){
+              console.log("port name is: ", portName)
+              port = new SerialPort(portName, {
+                //autoOpen: false,
+                baudRate: 9600
+              })
+              //port.open(port)
+              port.on('error', function(err) {
+                console.log(err)
+                alert('Error: ', err.message);
+              })
+              port.on('close', function(){
+                port = undefined;
+              })
+              var Readline = SerialPort.parsers.Readline;
+              var parser = new Readline();
+              console.log(port);
+              port.pipe(parser)
+              parser.on('data', function(data){
+                //console.log("The message from mc is \"", data, "\"");
+                var parsedData = data.split(" ");
+                var dataset = {'temperature': parsedData[0], 'pH': parsedData[1], 'ss': parsedData[2]};
+                console.log("Temp is: " + dataset['temperature'] + ", pH is: " + dataset['pH'] + ", and stirring speed is: ",dataset['ss'],'.')
+                var today = new Date();
+				
+                var csvLogString = today.toISOString() + ',' + dataset['temperature'] + ',' + dataset['pH'] + ',' + dataset['ss'] + '\n';
+                const fs = require('fs');
+                fs.appendFile('bioreacter_data.log', csvLogString, function (err, file){
+                  if (err) throw err;
+                  console.log('Successfully write to the log file!');
+                })
+              })
+            }else{
+              console.log('Port busy! No port is available to connect with the microcontroller!')
+            }
+          }
+        })
+      }
+    })
+
+    let prev_temp
+    let prev_ss
+    function insertTemp(){
+      if (document.getElementById("temp").value == "" && prev_temp != undefined){
+        document.getElementById("temp").value = prev_temp;
+      }
+    }
+    function insertSs(){
+      if (document.getElementById("ss").value == "" && prev_ss != undefined){
+        document.getElementById("ss").value = prev_ss;
+      }
+    }
+
+    function validateTemp(temp){
+      var re = /[1-9][0-9]\.[0-9]/;
+      if (re.test(temp)){
+        temp = parseFloat(temp);
+        if (temp <= 35 && temp >= 25){
+          return true;
+        }
+      }
+      return false;
+    }
+    function validatess(ss){
+      var re = /[1-9][0-9]{2,3}?/
+      if (re.test(ss)){
+        ss = parseInt(ss)
+        if (ss >= 500 && ss <= 1500){
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /*var Readline = SerialPort.parsers.Readline;
+    var parser = new Readline();
+    port.pipe(parser)
+    parser.on('data', console.log)*/
+    //Trying out form
+    const submitFormButton = document.querySelector("#inputs");
+    submitFormButton.addEventListener("submit", function(event){
+        event.preventDefault();   // stop the form from submitting
+        var temp = document.getElementById("temp").value
+        var ss = document.getElementById("ss").value
+        if (temp == ""){
+          alert("Please provide a value for temperature!")
+        }
+        if (ss == ""){
+          alert("Please provide a value for stirring speed!")
+        }
+        if (validateTemp(temp) && validatess(ss)){ //if all inputs are valid
+          //save the values
+          prev_temp = temp
+          prev_ss = ss
+          document.getElementById("temp").value = temp
+          document.getElementById("ss").value = ss
+          //write to serialport
+          if (port != undefined && port.isOpen){
+            var settings = temp + ' ' + ss + '\n';
+            port.write(settings,'ascii', function(err) {
+              if (err) {
+                return console.log('Error on write: ', err.message);
+              }
+              console.log('Upload user settings succesful!');
+            });
+            port.drain();
+            // Open errors will be emitted as an error event
+            port.on('error', function(err) {
+              console.log('Error: ', err.message);
+            })
+          }else{
+            if (port == undefined) alert("Please make sure you click on \"connect\" to establish port connection!");
+            if (!port.isOpen) alert("please connect the micro controller to the laptop!")
+          }
+        }else{
+          if (!validatess(ss)) console.log("stiring speed is not valid!");
+          if (!validateTemp(temp)) console.log("temp is not valid!")
+        }
+    });
+	  
+  </script>
+</html>

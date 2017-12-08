@@ -1,0 +1,90 @@
+<!doctype html>
+		<html>	
+			<body>
+
+			<p>
+				<button type="button" class="btn btn-primary btn-xs stanza_selected" id="stanza"><i class="fa fa-eye"></i> Per stanza</button>
+				<button type="button" class="btn btn-default btn-xs settimanale_button" id="settimanale">Andamento settimanale</button>
+				<button type="button" class="btn btn-primary btn-xs settimanale_selected" id="settimanale" style="display:none;"><i class="fa fa-eye"></i> Andamento settimanale</button>
+				<button type="button" class="btn btn-default btn-xs mensile_button" id="mensile">Andamento mensile</button>
+				<button type="button" class="btn btn-primary btn-xs mensile_selected" id="mensile" style="display:none;"><i class="fa fa-eye"></i> Andamento mensile</button>
+				<button type="button" class="btn btn-default btn-xs annuo_button" id="annuo">Andamento annuo</button>
+				<button type="button" class="btn btn-primary btn-xs annuo_selected" id="annuo" style="display:none;"><i class="fa fa-eye"></i> Andamento annuo</button>
+			</p>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>	
+
+<script>
+var canvas_html = '<canvas id="canvas" height="100px;"></canvas>';
+    
+$(document).ready(function(){
+
+    // draw stanza at launch
+    drawChart(generateChartData());
+    
+    $("#stanza").click(function() {
+        // redraw chart with stanza data
+        drawChart(generateChartData());
+    });
+
+    $("#settimanale").click(function(){
+        // redraw chart with settimanale data
+        drawChart(generateChartData());
+    });
+
+    $("#mensile").click(function(){
+		// redraw chart with mensile data
+        drawChart(generateChartData());
+    });
+
+    $("#annuo").click(function(){
+        // redraw chart with annuo data
+        drawChart(generateChartData());
+    });
+});
+    
+    var drawChart = function(data) {
+        // reinit canvas
+        $('#canvas_container').html(canvas_html);
+        
+        // redraw chart
+        var ctx = document.getElementById("canvas").getContext("2d");
+            window.myBar = new Chart(ctx).Bar(data, {
+                responsive : true
+        }); 
+    };
+</script>
+		<div>
+            <!-- will be filled in JS -->
+            <div id="canvas_container"></div>
+		</div>
+
+	<script>
+	var randomScalingFactor = function() { 
+        return Math.round(Math.random()*100);
+    };
+
+	var generateChartData = function () { return {
+		labels : ["January","February","March","April","May","June","July"],
+		datasets : [
+			{
+				fillColor : "rgba(220,220,220,0.5)",
+				strokeColor : "rgba(220,220,220,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			},
+			{
+				fillColor : "rgba(151,187,205,0.5)",
+				strokeColor : "rgba(151,187,205,0.8)",
+				highlightFill : "rgba(151,187,205,0.75)",
+				highlightStroke : "rgba(151,187,205,1)",
+				data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+			}
+		]
+
+	};
+};
+
+	</script>
+	</body>
+	</html>
